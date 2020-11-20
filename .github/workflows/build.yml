@@ -43,13 +43,14 @@ jobs:
 
       - name: Pack toolchain
         run: |
+          mkdir -p publish
           cd musl-cross-make || exit 1
           mv output x86_64-none-linux-musl
-          tar Jcf x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
+          tar Jcf ../publish/x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
 
       - name: Git push assets to "release" branch
         run: |
-          cd musl-cross-make || exit 1
+          cd publish || exit 1
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
@@ -59,5 +60,5 @@ jobs:
           git add .gitattributes
           git add x86_64-none-linux-musl.tar.xz
           git commit -m "toolchain release"
-          git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release
