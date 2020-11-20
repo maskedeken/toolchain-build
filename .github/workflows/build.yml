@@ -39,4 +39,22 @@ jobs:
           echo "TARGET = x86_64-linux-musl" >> ./config.mak
           echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
-          make -j2
+          make install -j2
+
+      - name: Pack toolchain
+        run: |
+          cd musl-cross-make || exit 1
+          mv output x86_64-none-linux-musl
+          tar Jcf x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
+
+      - name: Git push assets to "release" branch
+        run: |
+          cd musl-cross-make || exit 1
+          git init
+          git config --local user.name "actions"
+          git config --local user.email "action@github.com"
+          git checkout -b release
+          git add x86_64-none-linux-musl
+          git commit -m "x86_64-toolchain release"
+          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f -u origin release
