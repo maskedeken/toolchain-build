@@ -54,7 +54,7 @@ jobs:
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
           git checkout -b release
-          git add x86_64-none-linux-musl
-          git commit -m "x86_64-toolchain release"
+          git add x86_64-none-linux-musl.tar.xz
+          git commit -m "toolchain release"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release
