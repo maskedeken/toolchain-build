@@ -36,8 +36,8 @@ jobs:
           echo "GCC_VER = 8.3.0" >> ./config.mak
           echo "MUSL_VER = 1.1.24" >> ./config.mak
           echo "LINUX_VER = headers-4.19.88" >> ./config.mak
-          echo "TARGET = x86_64-linux-musl" >> ./config.mak
-          echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
+          echo "TARGET = aarch64-linux-musl" >> ./config.mak
+          #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
           make install -j2
 
@@ -45,8 +45,8 @@ jobs:
         run: |
           mkdir -p publish
           cd musl-cross-make || exit 1
-          mv output x86_64-none-linux-musl
-          tar Jcf ../publish/x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
+          mv output aarch64-none-linux-musl
+          tar Jcf ../publish/aarch64-none-linux-musl.tar.xz aarch64-none-linux-musl
 
       - name: Git push assets to "release" branch
         run: |
@@ -58,7 +58,7 @@ jobs:
           git lfs install
           git lfs track "*.xz"
           git add .gitattributes
-          git add x86_64-none-linux-musl.tar.xz
+          git add aarch64-none-linux-musl.tar.xz
           git commit -m "toolchain release"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f -u origin release
