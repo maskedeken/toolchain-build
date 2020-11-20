@@ -54,6 +54,9 @@ jobs:
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
           git checkout -b release
+          git lfs install
+          git lfs track "*.xz"
+          git add .gitattributes
           git add x86_64-none-linux-musl.tar.xz
           git commit -m "toolchain release"
           git remote set-url origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
