@@ -40,8 +40,9 @@ jobs:
           echo "GCC_VER = 8.4.0" >> ./config.mak
           echo "MUSL_VER = 1.1.24" >> ./config.mak
           echo "LINUX_VER = headers-4.19.88" >> ./config.mak
-          echo "TARGET = x86_64-linux-musl" >> ./config.mak
-          echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
+          echo "TARGET = arm-linux-musl" >> ./config.mak
+          #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
+          echo "GCC_CONFIG += --with-cpu=cortex-a7 --with-fpu=neon-vfpv4 --with-float=hard" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
           cp -rf ../toolchain/patches/* patches/
           cp ../toolchain/hashes/* hashes/
@@ -51,20 +52,27 @@ jobs:
         run: |
           mkdir -p publish
           cd musl-cross-make || exit 1
-          mv output x86_64-none-linux-musl
-          tar Jcf ../publish/x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
+          mv output arm-none-linux-musl
+          tar Jcf ../publish/arm-none-linux-musl.tar.xz arm-none-linux-musl
 
-      - name: Git push assets to "release" branch
-        run: |
-          cd publish || exit 1
-          git init
-          git config --local user.name "actions"
-          git config --local user.email "action@github.com"
-          git checkout -b release
-          git lfs install
-          git lfs track "*.xz"
-          git add .gitattributes
-          git add x86_64-none-linux-musl.tar.xz
-          git commit -m "toolchain release"
-          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u origin release
+      - name: Create a release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: arm-toolchain
+          release_name: arm-toolchain
+          draft: false
+          prerelease: false
+
+      - name: Upload toolchain
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/arm-none-linux-musl.tar.xz
+          asset_name: arm-none-linux-musl.tar.xz
+          asset_content_type: application/octet-stream
+
