@@ -22,6 +22,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout code base
+        uses: actions/checkout@v2
+        with:
+          path: toolchain
 
       - name: Checkout richfelker/musl-cross-make
         uses: actions/checkout@v2
@@ -33,12 +37,13 @@ jobs:
         run: |
           cd musl-cross-make || exit 1
           echo "BINUTILS_VER = 2.32" >> ./config.mak
-          echo "GCC_VER = 8.3.0" >> ./config.mak
+          echo "GCC_VER = 8.4.0" >> ./config.mak
           echo "MUSL_VER = 1.1.24" >> ./config.mak
           echo "LINUX_VER = headers-4.19.88" >> ./config.mak
           echo "TARGET = aarch64-linux-musl" >> ./config.mak
           #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
+          cp -rf ../toolchain/patches/* patches/
           make install -j2
 
       - name: Pack toolchain
