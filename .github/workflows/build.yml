@@ -44,6 +44,7 @@ jobs:
           #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
           cp -rf ../toolchain/patches/* patches/
+          cp ../toolchain/hashes/* hashes/
           make install -j2
 
       - name: Pack toolchain
