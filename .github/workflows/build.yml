@@ -40,7 +40,7 @@ jobs:
           echo "GCC_VER = 8.4.0" >> ./config.mak
           echo "MUSL_VER = 1.1.24" >> ./config.mak
           echo "LINUX_VER = headers-4.19.88" >> ./config.mak
-          echo "TARGET = arm-linux-musl" >> ./config.mak
+          echo "TARGET = arm-linux-musleabi" >> ./config.mak
           #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           echo "GCC_CONFIG += --with-cpu=cortex-a7 --with-fpu=neon-vfpv4 --with-float=hard" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
@@ -52,8 +52,8 @@ jobs:
         run: |
           mkdir -p publish
           cd musl-cross-make || exit 1
-          mv output arm-none-linux-musl
-          tar Jcf ../publish/arm-none-linux-musl.tar.xz arm-none-linux-musl
+          mv output arm-none-linux-musleabi
+          tar Jcf ../publish/arm-none-linux-musleabi.tar.xz arm-none-linux-musleabi
 
       - name: Create a release
         id: create_release
@@ -72,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./publish/arm-none-linux-musl.tar.xz
-          asset_name: arm-none-linux-musl.tar.xz
+          asset_path: ./publish/arm-none-linux-musleabi.tar.xz
+          asset_name: arm-none-linux-musleabi.tar.xz
           asset_content_type: application/octet-stream
 
