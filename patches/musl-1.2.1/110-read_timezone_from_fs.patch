@@ -1,0 +1,19 @@
+diff -ur a/src/time/__tz.c b/src/time/__tz.c
+--- a/src/time/__tz.c	2020-08-04 00:21:09.000000000 -0400
++++ b/src/time/__tz.c	2020-11-25 00:38:10.721974648 -0500
+@@ -125,6 +125,15 @@
+ 		"/usr/share/zoneinfo/\0/share/zoneinfo/\0/etc/zoneinfo/\0";
+ 
+ 	s = getenv("TZ");
++
++	/* if TZ is empty try to read it from /etc/TZ */
++	if (!s || !*s) {
++		if (tzfile)
++			__munmap((void*)tzfile, tzfile_size);
++
++		s = tzfile = (void *)__map_file("/etc/TZ", &tzfile_size);
++	}
++
+ 	if (!s) s = "/etc/localtime";
+ 	if (!*s) s = __utc;
+ 

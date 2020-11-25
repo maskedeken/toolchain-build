@@ -38,11 +38,11 @@ jobs:
           cd musl-cross-make || exit 1
           echo "BINUTILS_VER = 2.31.1" >> ./config.mak
           echo "GCC_VER = 8.4.0" >> ./config.mak
-          echo "MUSL_VER = 1.1.24" >> ./config.mak
+          echo "MUSL_VER = 1.2.1" >> ./config.mak
           echo "LINUX_VER = headers-4.19.88" >> ./config.mak
-          echo "TARGET = arm-linux-musleabi" >> ./config.mak
+          echo "TARGET = aarch64-linux-musl" >> ./config.mak
           #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
-          echo "GCC_CONFIG += --with-cpu=cortex-a7 --with-fpu=neon-vfpv4 --with-float=hard" >> ./config.mak
+          #echo "GCC_CONFIG += --with-cpu=cortex-a7 --with-fpu=neon-vfpv4 --with-float=hard" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
           cp -rf ../toolchain/patches/* patches/
           cp ../toolchain/hashes/* hashes/
@@ -52,8 +52,8 @@ jobs:
         run: |
           mkdir -p publish
           cd musl-cross-make || exit 1
-          mv output arm-none-linux-musleabi
-          tar Jcf ../publish/arm-none-linux-musleabi.tar.xz arm-none-linux-musleabi
+          mv output aarch64-none-linux-musl
+          tar Jcf ../publish/aarch64-none-linux-musl.tar.xz aarch64-none-linux-musl
 
       - name: Create a release
         id: create_release
@@ -61,8 +61,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: arm-toolchain_202011231712
-          release_name: arm-toolchain_202011231712
+          tag_name: aarch64-toolchain_202011251345
+          release_name: aarch64-toolchain_202011251345
           draft: false
           prerelease: false
 
@@ -72,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./publish/arm-none-linux-musleabi.tar.xz
-          asset_name: arm-none-linux-musleabi.tar.xz
+          asset_path: ./publish/aarch64-none-linux-musl.tar.xz
+          asset_name: aarch64-none-linux-musl.tar.xz
           asset_content_type: application/octet-stream
 
