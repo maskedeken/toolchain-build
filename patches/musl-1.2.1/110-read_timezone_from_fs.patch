@@ -1,7 +1,17 @@
 diff -ur a/src/time/__tz.c b/src/time/__tz.c
 --- a/src/time/__tz.c	2020-08-04 00:21:09.000000000 -0400
-+++ b/src/time/__tz.c	2020-11-25 00:38:10.721974648 -0500
-@@ -125,6 +125,15 @@
++++ b/src/time/__tz.c	2020-11-25 01:25:56.897557181 -0500
+@@ -25,6 +25,9 @@
+ static const unsigned char *zi, *trans, *index, *types, *abbrevs, *abbrevs_end;
+ static size_t map_size;
+ 
++static const char *tzfile;
++static size_t tzfile_size;
++
+ static char old_tz_buf[32];
+ static char *old_tz = old_tz_buf;
+ static size_t old_tz_size = sizeof old_tz_buf;
+@@ -125,6 +128,15 @@
  		"/usr/share/zoneinfo/\0/share/zoneinfo/\0/etc/zoneinfo/\0";
  
  	s = getenv("TZ");
