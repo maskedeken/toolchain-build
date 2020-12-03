@@ -39,10 +39,13 @@ jobs:
           echo "BINUTILS_VER = 2.31.1" >> ./config.mak
           echo "GCC_VER = 8.4.0" >> ./config.mak
           echo "MUSL_VER = 1.2.1" >> ./config.mak
-          echo "LINUX_VER = headers-4.19.88" >> ./config.mak
+          echo "LINUX_VER = 3.4.10" >> ./config.mak
+          #echo "LINUX_VER = headers-4.19.88" >> ./config.mak
           #echo "TARGET = aarch64-linux-musl" >> ./config.mak
-          echo "TARGET = x86_64-linux-musl" >> ./config.mak
-          echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
+          #echo "TARGET = x86_64-linux-musl" >> ./config.mak
+          echo "TARGET = mipsel-linux-musl" >> ./config.mak
+          echo "GCC_CONFIG += --with-float=hard --with-abi=32 --with-tune=mips32r2" >> ./config.mak
+          #echo "GCC_CONFIG += --with-arch=atom" >> ./config.mak
           #echo "GCC_CONFIG += --with-cpu=cortex-a7 --with-fpu=neon-vfpv4 --with-float=hard" >> ./config.mak
           echo "GCC_CONFIG += --enable-lto --with-gnu-ld" >> ./config.mak
           cp -rf ../toolchain/patches/* patches/
@@ -53,8 +56,8 @@ jobs:
         run: |
           mkdir -p publish
           cd musl-cross-make || exit 1
-          mv output x86_64-none-linux-musl
-          tar Jcf ../publish/x86_64-none-linux-musl.tar.xz x86_64-none-linux-musl
+          mv output mipsel-none-linux-musl
+          tar Jcf ../publish/mipsel-none-linux-musl.tar.xz mipsel-none-linux-musl
 
       - name: Create a release
         id: create_release
@@ -62,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: x86_64-toolchain_202011251600
-          release_name: x86_64-toolchain_202011251600
+          tag_name: mipsel-toolchain_202012031500
+          release_name: mipsel-toolchain_202012031500
           draft: false
           prerelease: false
 
@@ -73,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./publish/x86_64-none-linux-musl.tar.xz
-          asset_name: x86_64-none-linux-musl.tar.xz
+          asset_path: ./publish/mipsel-none-linux-musl.tar.xz
+          asset_name: mipsel-none-linux-musl.tar.xz
           asset_content_type: application/octet-stream
 
